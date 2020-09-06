@@ -30,7 +30,7 @@ async def on_message(message):
     if message.author == client.user:
         return
 
-    if (message.content.startswith('.register') and message.author.id == DIS_OWNER):
+    if (message.content.startswith('.register') and message.author.id == int(DIS_OWNER)):
         cr = dbq.cursor(buffered=True)
         try:
             is_private_dm = 0
@@ -56,7 +56,7 @@ async def on_message(message):
         cr.close()
         await message.channel.send('Pugsy was unable to register channel')
     
-    if (message.content.startswith('.testpugapi') and message.author.id == DIS_OWNER):
+    if (message.content.startswith('.testpugapi') and message.author.id == int(DIS_OWNER)):
         await homeapi('pug', message.channel.id)
     
     if message.content.startswith('.listdog'):
