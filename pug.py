@@ -64,79 +64,34 @@ async def on_message(message):
     
     if message.content.startswith('.dogs'):
         await listdogs(message)
+    
+    remote_dogs = {
+        'pug': 'https://dog.ceo/api/breed/pug/images/random',
+        'husky': 'https://dog.ceo/api/breed/husky/images/random',
+        'golden': 'https://dog.ceo/api/breed/retriever/golden/images/random',
+        'lab': 'https://dog.ceo/api/breed/labrador/images/random',
+        'rot': 'https://dog.ceo/api/breed/rottweiler/images/random',
+        'corgi': 'https://dog.ceo/api/breed/corgi/images/random',
+        'cloud': 'https://dog.ceo/api/breed/samoyed/images/random',
+        'hotdog': 'https://dog.ceo/api/breed/dachshund/images/random',
+        'boxer': 'https://dog.ceo/api/breed/boxer/images/random',
+        'bagel': 'https://dog.ceo/api/breed/beagle/images/random',
+        'dob': 'https://dog.ceo/api/breed/doberman/images/random',
+        'germany': 'https://dog.ceo/api/breed/germanshepherd/images/random',
+        'biscuit': 'https://dog.ceo/api/breed/frise/bichon/images/random',
+        'oodle': 'https://dog.ceo/api/breed/poodle/images/random'
+    }
 
-    if message.content.startswith('.pug'):
-        pug_pic = req.get('https://dog.ceo/api/breed/pug/images/random')
-        pug_file = pug_pic.json()
-        url = urllib.request.urlopen(pug_file['message'])
-        channel = message.channel
-        await channel.send(file=discord.File(io.BytesIO(url.read()), "cool_pug.png"))
+    for dog in remote_dogs.keys():
+        if message.content.startswith(f'.${dog}'):
+            try:
+                url = urllib.request.urlopen(req.get(remote_dogs[dog]).json()['message'])
+                await message.channel.send(file=discord.File(io.BytesIO(url.read()), f'cool_${dog}.png'))
+            except:
+                await message.channel.send('Error all the dogs have gotten out!')
     
     if message.content.startswith('.bull'):
         await homeapi('bulldog', message.channel.id)
-
-    if message.content.startswith('.husky'):
-        husky = req.get('https://dog.ceo/api/breed/husky/images/random')
-        url = urllib.request.urlopen(husky.json()['message'])
-        await message.channel.send(file=discord.File(io.BytesIO(url.read()), "cool_husky.png"))
-
-    if message.content.startswith('.golden'):
-        golden = req.get('https://dog.ceo/api/breed/retriever/golden/images/random')
-        url = urllib.request.urlopen(golden.json()['message'])
-        await message.channel.send(file=discord.File(io.BytesIO(url.read()), 'cool_golden.png'))
-
-    if message.content.startswith('.lab'):
-        lab = req.get('https://dog.ceo/api/breed/labrador/images/random')
-        url = urllib.request.urlopen(lab.json()['message'])
-        await message.channel.send(file=discord.File(io.BytesIO(url.read()), 'cool_lab.png'))
-    
-    if message.content.startswith('.rot'):
-        rot = req.get('https://dog.ceo/api/breed/rottweiler/images/random')
-        url = urllib.request.urlopen(rot.json()['message'])
-        await message.channel.send(file=discord.File(io.BytesIO(url.read()), 'cool_rot.png'))
-
-    if message.content.startswith('.corgi'):
-        corgi = req.get('https://dog.ceo/api/breed/corgi/images/random')
-        url = urllib.request.urlopen(corgi.json()['message'])
-        await message.channel.send(file=discord.File(io.BytesIO(url.read()), 'cool_corgi.png'))
-
-    if message.content.startswith('.cloud'):
-        cloud = req.get('https://dog.ceo/api/breed/samoyed/images/random')
-        url = urllib.request.urlopen(cloud.json()['message'])
-        await message.channel.send(file=discord.File(io.BytesIO(url.read()), 'cool_cloud.png'))
-    
-    if message.content.startswith('.hotdog'):
-        hotdog = req.get('https://dog.ceo/api/breed/dachshund/images/random')
-        url = urllib.request.urlopen(hotdog.json()['message'])
-        await message.channel.send(file=discord.File(io.BytesIO(url.read()), 'cool_hotdog.png'))
-
-    if message.content.startswith('.boxer'):
-        boxer = req.get('https://dog.ceo/api/breed/boxer/images/random')
-        url = urllib.request.urlopen(boxer.json()['message'])
-        await message.channel.send(file=discord.File(io.BytesIO(url.read()), 'cool_boxer.png'))
-
-    if message.content.startswith('.bagel'):
-        bagel = req.get('https://dog.ceo/api/breed/beagle/images/random')
-        url = urllib.request.urlopen(bagel.json()['message'])
-        await message.channel.send(file=discord.File(io.BytesIO(url.read()), 'cool_bagel.png'))
-
-    if message.content.startswith('.dob'):
-        dob = req.get('https://dog.ceo/api/breed/doberman/images/random')
-        url = urllib.request.urlopen(dob.json()['message'])
-        await message.channel.send(file=discord.File(io.BytesIO(url.read()), 'cool_dob.png'))
-
-    if message.content.startswith('.germany'):
-        germany = req.get('https://dog.ceo/api/breed/germanshepherd/images/random')
-        url = urllib.request.urlopen(germany.json()['message'])
-        await message.channel.send(file=discord.File(io.BytesIO(url.read()), 'cool_germany.png'))
-    
-    if message.content.startswith('.biscuit'):
-        biscuit = req.get('https://dog.ceo/api/breed/frise/bichon/images/random')
-        url = urllib.request.urlopen(biscuit.json()['message'])
-        await message.channel.send(file=discord.File(io.BytesIO(url.read()), 'cool_biscuit.png'))
-
-    if message.content.startswith('.oodle'):
-        await dogceo("poodle", message.channel.id)
 
     if message.content.startswith('.tucker'):
         tucker = randint(1, 31)
@@ -162,15 +117,6 @@ async def homeapi(dog_type, channel_id):
         dog_url = urllib.request.urlopen(DOG_URL % str(dog_type) + '/' + dog_req.json()['hash'] + '.' + dog_req.json()['format'])
         channel = client.get_channel(int(channel_id))
         await channel.send(file=discord.File(io.BytesIO(dog_url.read()), (dog_req.json()['hash'] + '.' + dog_req.json()['format'])))
-    except:
-        await channel.send('Error all the dogs have gotten out!')
-
-async def dogceo(msg, channel_id):
-    channel = client.get_channel(int(channel_id))
-    try:
-        dog = req.get("https://dog.ceo/api/breed/%s/images/random" % msg)
-        url = urllib.request.urlopen(dog.json()['message'])
-        await channel.send(file=discord.File(io.BytesIO(url.read()), '%s.jpg' % msg))
     except:
         await channel.send('Error all the dogs have gotten out!')
 
